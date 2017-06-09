@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2013, Osnabrück University
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -13,7 +13,7 @@
  *     * Neither the name of Osnabrück University nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -266,7 +266,12 @@ int SickTim5512050001Parser::parse_datagram(char* datagram, size_t datagram_leng
         unsigned short intensity;
         sscanf(fields[j + offset], "%hx", &intensity);
         msg.intensities[j - index_min] = intensity;
+
+        if (intensity < config.min_intensity || intensity > config.max_intensity) {
+          msg.ranges[j - index_min] = override_range_max_ + 1;
+        }
       }
+
     } else {
       ROS_WARN_ONCE("Intensity parameter is enabled, but the scanner is not configured to send RSSI values! "
        "Please read the section 'Enabling intensity (RSSI) output' here: http://wiki.ros.org/sick_tim.");
